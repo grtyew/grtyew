@@ -1,0 +1,27 @@
+function initLegend(){
+	    	const legend = L.control.Legend({
+	            position: "bottomright",
+	            collapsed: false,
+	            symbolWidth: 35,
+	            opacity: 1,
+				title:"图例",
+	            column: 2,
+	            legends: [ {
+	                label: "海外",
+	                type: "circle",
+	                radius: 12,
+	                color: "#c50808",
+	                fillColor: "#c50808",
+	                fillOpacity: 0.6,
+	                weight: 2
+	            }, {
+	            	label: "本土",
+	                type: "circle",
+	                radius: 10,
+	                color: "#168d40",
+	                fillColor: "#168d40",
+	                fillOpacity: 0.6,
+	                weight: 2
+	            }]
+	        }).addTo(mymap);
+	    }
