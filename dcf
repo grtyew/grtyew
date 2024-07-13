@@ -1,0 +1,8 @@
+string refSql="SELECT [PName],[CCVC],[Price], LogoUrl FROM [CCVC_PriceList]  order by CCVC";
+bool HasTitle=false;
+System.Data.CommandType ct=System.Data.CommandType.Text;
+ 
+        pitemdetail.Visible = true;
+        string itemmodule = getOuterHtml(pitemdetail);
+        result.Text = RepeatHtml(itemmodule);
+        pitemdetail.Visible = false;
