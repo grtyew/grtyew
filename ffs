@@ -1,0 +1,10 @@
+async function doOperations() {
+  try {
+    const result1 = await someAsyncOperation();
+    const result2 = await anotherAsyncOperation(result1);
+    const result3 = await yetAnotherAsyncOperation(result2);
+    // ...处理result3...
+  } catch (error) {
+    // ...统一处理错误...
+  }
+}
