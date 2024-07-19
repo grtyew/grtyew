@@ -1,0 +1,73 @@
+struct AudioData {
+    const char* data;
+    size_t size;
+    size_t currentIndex;
+};
+
+void dataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
+{
+
+    AudioData* audioData = reinterpret_cast<AudioData*>(pDevice->pUserData);
+
+       // 计算每帧的字节数
+       size_t bytesPerFrame = pDevice->playback.channels * ma_get_bytes_per_sample(pDevice->playback.format);
+
+       // 计算要拷贝的字节数
+       size_t bytesToCopy = frameCount * bytesPerFrame;
+
+       // 检查剩余的 PCM 数据是否足够
+       if (audioData->currentIndex + bytesToCopy > audioData->size) {
+           bytesToCopy = audioData->size - audioData->currentIndex;  // 不足时只拷贝剩余的部分
+       }
+
+       // 拷贝 PCM 数据到输出缓冲区
+       std::memcpy(pOutput, audioData->data + audioData->currentIndex, bytesToCopy);
+
+       // 如果 PCM 数据不够，填充剩余部分为0
+       if (bytesToCopy < frameCount * bytesPerFrame) {
+           std::memset(static_cast<char*>(pOutput) + bytesToCopy, 0, (frameCount * bytesPerFrame) - bytesToCopy);
+       }
+
+       // 更新当前读取位置
+       audioData->currentIndex += bytesToCopy;
+}
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    QByteArray pcmData(reinterpret_cast<const char*>(pcmArray), sizeof(pcmArray));
+    playPCM(pcmData);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::playPCM(const QByteArray& pcmData)
+{
+    AudioData audioData = { pcmData.constData(), static_cast<size_t>(pcmData.size()), 0 };
+    ma_device_config config = ma_device_config_init(ma_device_type_playback);
+    config.playback.format = ma_format_s16;
+    config.playback.channels = 1;
+    config.sampleRate =16000;
+    config.dataCallback = dataCallback;
+    config.pUserData = &audioData;
+
+    ma_device device;
+    if(ma_device_init(NULL,&config, &device) != MA_SUCCESS)
+    {
+        return;
+    }
+    if(ma_device_start(&device) != MA_SUCCESS)
+    {
+        ma_device_uninit(&device);
+        return;
+    }
+    while (audioData.currentIndex < audioData.size)
+    {//循环判断是否可以关闭 音频
+        ma_sleep(100);
+    }
+    ma_device_uninit(&device);
+}
