@@ -1,0 +1,74 @@
+package cvit.com.manager;
+import cvit.com.manager.*;
+import cvit.com.pub.DBConn;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.Connection;
+import cvit.com.model.Course;
+import java.sql.SQLException;
+import java.util.Vector;
+
+public class CourseManager {
+   
+    public int addCourse(Course c) {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        DBConn db = new DBConn();
+        conn = db.getConn();
+        int i = 0;
+        String sql = "insert into course values('" + c.getCno()+ "', '" +
+                c.getCname() + "', '" + c.getCteacher() +"', '" +
+                c.getCtype() + "', '" + c.getCplace() +"', '" + c.getCtime() +"')";
+        try {
+            stmt = conn.createStatement();
+            i = stmt.executeUpdate(sql);
+            stmt.close();
+            conn.close();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        return i;
+    }
+   
+    public int deleteCourse(String cno) {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        DBConn db = new DBConn();
+        conn = db.getConn();
+        int i = 0;
+        String sql = "delete from course where cno='" + cno +"'";
+        try {
+            stmt = conn.createStatement();
+            i = stmt.executeUpdate(sql);
+            stmt.close();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+ 
+    public int update_Course(String cno, String cname, String cteacher,
+                             String ctype, String cplace, String ctime)
+    {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        DBConn db = new DBConn();
+        conn = db.getConn();
+        int i = 0;
+        String sql = "update course set cname='" + cname +"', cteacher='"+
+                cteacher + "', ctype='" + ctype +"', cplace='"+
+                cplace + "', ctime='" + ctime + "' wherecno='" + cno +"'";
+        try {
+            stmt = conn.createStatement();
+            i = stmt.executeUpdate(sql);
+            stmt.close();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
