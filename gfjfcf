@@ -1,0 +1,45 @@
+# 导入需要的库
+import csv
+import logging
+import time
+from random import randint
+ 
+import requests
+import urllib3
+from fake_useragent import UserAgent
+from lxml import etree
+ 
+# 禁用SSL警告
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+ 
+# 配置日志记录，记录日志级别为INFO，并将日志输出到文件spider.log中
+logging.basicConfig(filename='spider.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+ 
+# 初始化error_logger，用于记录错误日志，记录日志级别为ERROR，并将日志输出到文件error.log中
+error_logger = logging.getLogger('error_logger')
+error_logger.setLevel(logging.ERROR)
+ 
+# 请求头信息，包括User-Agent和Referer
+HEADERS = {
+    'User-Agent': UserAgent().random,
+    'Referer': 'https://www.*.net/html/*/*/index.html'
+}
+ 
+# 基础URL
+BASE_URL = 'https://www.*.net'
+ 
+# 定义一个字典，用于存储电影信息
+video_info = {
+    'Video_Name_CN': None,
+    'Video_Name': None,
+    'Video_Address': None,
+    'Video_Type': None,
+    'Video_Language': None,
+    'Video_Date': None,
+    'Video_Number': None,
+    'Video_Time': None,
+    'Video_Director': None,
+    'Video_Cast': []
+}
+ 
+ 
